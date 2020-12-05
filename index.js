@@ -23,10 +23,14 @@ app.get('/ping', (req, res) => {
 });
 
 app.get('/positions', (req, res) => {
-  const { description, location } = req.query;
-
+  const { description, location, page, full_time } = req.query;
+  let url = 'https://jobs.github.com/positions.json?';
+  description && (url+=`description=${description}`)
+  location && (url+=`&location=${location}`)
+  page && (url+=`&page=${page}`)
+  full_time && (url+=`&full_time=${full_time}`)
   request(
-    { url: `https://jobs.github.com/positions.json?description=${description}&location=${location}` },
+    { url },
     (error, response, body) => {
       if (error || response.statusCode !== 200) {
         return next(new Error(`Positions not available for ${description} + ${location}`));
